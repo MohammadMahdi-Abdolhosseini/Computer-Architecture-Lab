@@ -3,7 +3,7 @@ module TopLevel();
   
 	reg clk = 0, rst = 1;
 	wire [31:0] PC, Instruction;
-	ARM arm(clk, rst, PC, Instruction);
+	ARM arm(clk, rst);
 
 	always #10 clk = ~clk;
 	initial begin
