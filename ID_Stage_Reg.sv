@@ -6,7 +6,7 @@ module ID_Reg(
 	input IMM_IN,
 	input [11:0] ShiftOperand_IN,
 	input [23:0] Signed_IMM_24_IN,
-	input [3:0] Dest_IN,
+	input [3:0] Dest_IN, SR_IN
 
 	output reg WB_EN, MEM_R_EN, MEM_W_EN, B, S,
 	output reg [3:0] EXE_CMD,
@@ -14,7 +14,7 @@ module ID_Reg(
 	output reg IMM,
 	output reg [11:0] ShiftOperand,
 	output reg [23:0] Signed_IMM_24,
-	output reg [3:0] Dest
+	output reg [3:0] Dest, SR
 );
 	always@(posedge clk, posedge rst)begin
 		if(rst == 1'b1)
@@ -26,6 +26,7 @@ module ID_Reg(
 			ShiftOperand <= 0;
 			Signed_IMM_24 <= 0;
 			Dest <= 0;
+			SR <= 0;
 		end
 		else
 		begin
@@ -36,7 +37,7 @@ module ID_Reg(
 			ShiftOperand <= ShiftOperand_IN;
 			Signed_IMM_24 <= Signed_IMM_24_IN;
 			Dest <= Dest_IN;
-			
+			SR <= SR_IN;
 		end
 			
 	end
