@@ -36,6 +36,10 @@ module ID_Stage(
 	
 	assign IMM = Instruction[25];
 	assign Two_SRC = MEM_W_EN | ~IMM;
+
+	assign ShiftOperand = Instruction[11:0];
+	assign Signed_IMM_24 = Instruction[23:0];
+	assign Dest = Instruction[15:12];
 	
 	
 	

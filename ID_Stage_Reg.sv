@@ -35,7 +35,7 @@ module ID_Reg(
 			IMM <= IMM_IN;
 			ShiftOperand <= ShiftOperand_IN;
 			Signed_IMM_24 <= Signed_IMM_24_IN;
-			Dest <= Dest;
+			Dest <= Dest_IN;
 			
 		end
 			
