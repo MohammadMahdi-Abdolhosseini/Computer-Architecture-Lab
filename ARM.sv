@@ -68,14 +68,29 @@ module ARM(
 
 	EXE_Reg exe_reg(clk, rst, WB_EN_EXE, MEM_R_EN_EXE, MEM_W_EN_EXE, B_EXE, S_EXE,
 					ALU_Res_EXE, VAL_RM_EXE, Dest_EXE,
-					B_EN_EXE_reg, MEM_R_EN_EXE_reg, MEM_W_EN_EXE_reg, B_EXE_reg, S_EXE_reg,
+					WB_EN_EXE_reg, MEM_R_EN_EXE_reg, MEM_W_EN_EXE_reg, B_EXE_reg, S_EXE_reg,
 					ALU_Res_EXE_reg, VAL_RM_EXE_reg, Dest_EXE_reg);
 
 	Status_Reg status_reg(clk, rst, Status_EXE, S_ID_reg, SR);
 
-	MEM_Stage mem_stage(clk, rst, PC_EXE_reg, PC_MEM);
-	MEM_Reg mem_reg(clk, rst, PC_MEM, PC_MEM_reg);
-	WB_Stage wb_stage(clk, rst, PC_MEM_reg, PC_WB);
+
+	wire WB_EN_MEM, MEM_R_EN_MEM;
+	wire [31:0] ALU_Res_MEM, DATA_MEM;
+	wire [3:0] Dest_MEM;
+
+	wire WB_EN_MEM_reg, MEM_R_EN_MEM_reg;
+	wire [31:0] ALU_Res_MEM_reg, DATA_MEM_reg;
+	wire [3:0] Dest_MEM_reg;
+
+	MEM_Stage mem_stage(clk, rst, WB_EN_EXE_reg, MEM_R_EN_EXE_reg, MEM_W_EN_EXE_reg,
+						ALU_Res_EXE_reg, VAL_RM_EXE_reg, Dest_EXE_reg,
+						WB_EN_MEM, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM);
+
+	MEM_Reg mem_reg(clk, rst, WB_EN_MEM, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
+					WB_EN_MEM_reg, MEM_R_EN_MEM_reg, ALU_Res_MEM_reg, DATA_MEM_reg, Dest_MEM_reg);
+
+	WB_Stage wb_stage(clk, rst, WB_EN_MEM_reg, MEM_R_EN_MEM_reg, ALU_Res_MEM_reg, DATA_MEM_reg, Dest_MEM_reg,
+					  WriteBackEn, Result_WB, Dest_WB);
 	
 
 	assign clk = CLOCK_50;
