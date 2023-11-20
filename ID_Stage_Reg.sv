@@ -6,7 +6,7 @@ module ID_Reg(
 	input IMM_IN,
 	input [11:0] ShiftOperand_IN,
 	input [23:0] Signed_IMM_24_IN,
-	input [3:0] Dest_IN, SR_IN
+	input [3:0] Dest_IN, SR_IN,
 
 	output reg WB_EN, MEM_R_EN, MEM_W_EN, B, S,
 	output reg [3:0] EXE_CMD,
