@@ -9,6 +9,7 @@ module ControlUnit(
 	reg [3:0] EXE_CMD;
 	
 	always@(Mode, Opcode, S)begin
+		MEM_W_EN = 1'b0; 
 	//MOV
 	if (Mode == 2'b00 && Opcode == 4'b1101)begin
 		WB_EN = 1'b1;

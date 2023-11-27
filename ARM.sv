@@ -1,17 +1,19 @@
 `timescale 1ns/1ns
 module ARM(
 	//output [31:0] PC_IF_reg, Instruction_IF_reg,
-	input [17:0] SW, 
 	//output [17:0] LEDR, LEDG,
-	input CLOCK_50
-	//input clk, rst
+
+
+	//input [17:0] SW, 
+	//input CLOCK_50
+
+	input clk, rst
 );
   
-	reg freeze = 0, flush = 0, Branch_taken = 0;
+	wire freeze, flush, Branch_taken;
 	wire [31:0] BranchAddr;
 	wire [31:0] PC_IF, PC_IF_reg, PC_ID_reg, PC_EXE, PC_EXE_reg, PC_MEM, PC_MEM_reg, PC_WB;
-	wire [31:0] Instruction_IF, Instruction_IF_reg, Instruction_ID, Instruction_ID_reg;
-	wire clk, rst;
+	wire [31:0] Instruction_IF, Instruction_IF_reg, Instruction_ID, Instruction_ID_reg;	
 	
 
 	IF_Stage if_stage(clk, rst, freeze, Branch_taken, BranchAddr, PC_IF, Instruction_IF);
@@ -93,13 +95,25 @@ module ARM(
 					  WriteBackEn, Result_WB, Dest_WB);
 	
 
-	assign clk = CLOCK_50;
-	assign rst = SW[0];
+	HDU hdu(SRC1_ID, SRC2_ID, Dest_EXE, Dest_MEM, WB_EN_EXE, WB_EN_MEM, Two_SRC_ID, hazard);
+
+
+	assign freeze = hazard;
+	assign flush = B_ID_reg;
+	assign Branch_taken = B_ID_reg;
+
+	//wire clk, rst;
+	//assign clk = CLOCK_50;
+	//assign rst = SW[0];
+
+/*
 	//assign clk = SW[17];
 	//assign LEDR[0] = rst;
 	//assign LEDG[3:0] = Instruction_IF_reg[24:21];
-
 	//assign LEDR[17:0] = PC_IF_reg[17:0];
+*/
+
+	
 
 endmodule
 

@@ -22,7 +22,7 @@ module CondCheck(
 		4'd12: condition = (Z == 1'b0) & (N == V);
 		4'd13: condition = (Z == 1'b1) | (N != V);
 		4'd14: condition = 1'b1;
-		4'd15: condition = 1'b1;
+		4'd15: condition = 1'b0;
 	endcase
 	end
 	assign {N, Z, C, V} = Status;

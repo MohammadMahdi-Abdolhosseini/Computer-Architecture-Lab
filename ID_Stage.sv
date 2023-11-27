@@ -32,10 +32,10 @@ module ID_Stage(
 	wire condition;
 	CondCheck CC(Cond, SR, condition);
 
-	assign {WB_EN, MEM_R_EN, MEM_W_EN, EXE_CMD, B, S} = (hazard | ~condition) ? 9'b0 : CMD;
+	assign {WB_EN, MEM_R_EN, MEM_W_EN, EXE_CMD, B, S} = (hazard || ~condition) ? 9'b0 : CMD;
 	
 	assign IMM = Instruction[25];
-	assign Two_SRC = MEM_W_EN | ~IMM;
+	assign Two_SRC = MEM_W_EN || ~IMM;
 
 	assign ShiftOperand = Instruction[11:0];
 	assign Signed_IMM_24 = Instruction[23:0];

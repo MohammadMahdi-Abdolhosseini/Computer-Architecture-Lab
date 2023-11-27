@@ -1,12 +1,12 @@
 module Val2Gen (
-    input signed [31:0] VAL_RM_IN,
+    input [31:0] VAL_RM_IN,
     input IMM_IN,
     input [11:0] ShiftOperand_IN,
     input sel,
     output reg [31:0] Val2
 );
 
-    always @(sel, VAL_RM_IN, IMM_IN, ShiftOperand_IN) begin
+    always @(*) begin
         if (sel == 1) begin
             Val2 <= {{20{ShiftOperand_IN[11]}}, ShiftOperand_IN};
         end else if(IMM_IN) begin
@@ -33,7 +33,7 @@ module Val2Gen (
                 2'b00: Val2 = VAL_RM_IN << ShiftOperand_IN[11:7];
                 2'b01: Val2 = VAL_RM_IN >> ShiftOperand_IN[11:7];
                 2'b10: Val2 = VAL_RM_IN >>> ShiftOperand_IN[11:7];
-                2'b11: Val2 = VAL_RM_IN >> ShiftOperand_IN[11:7] | VAL_RM_IN << ~ShiftOperand_IN[11:7];
+                2'b11: Val2 = VAL_RM_IN >> ShiftOperand_IN[11:7] || VAL_RM_IN << !ShiftOperand_IN[11:7];
             endcase
         end
     end
