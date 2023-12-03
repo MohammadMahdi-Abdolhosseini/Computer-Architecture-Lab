@@ -5,14 +5,16 @@ module Memory (
     output [31:0] DATA
 );
            
-reg [31:0] MEM[63:0];
-wire [5:0] adr = (ALU_Res - 32'd1024)>>2;
+reg [31:0] MEM[0:63];
+wire [5:0] adr;
+
+assign adr = (ALU_Res - 32'd1024)>>2;
 
 always @(negedge clk) begin
 	if (MEM_W_EN)
 		MEM[adr] <= Val_Rm;
 end
 
-assign DATA = MEM_R_EN ? MEM[ALU_Res] : DATA;
+assign DATA = MEM_R_EN ? MEM[adr] : 32'b0;
 
 endmodule

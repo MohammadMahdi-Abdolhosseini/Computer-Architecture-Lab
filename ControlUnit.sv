@@ -107,7 +107,7 @@ module ControlUnit(
 		EXE_CMD = 4'b0010;
 	end
 	//STR
-	if (Mode == 2'b00 && Opcode == 4'b0100 && S == 1'b0)begin
+	if (Mode == 2'b01 && Opcode == 4'b0100 && S == 1'b0)begin
 		WB_EN = 1'b0;
 		MEM_R_EN = 1'b0;
 		MEM_W_EN = 1'b1;

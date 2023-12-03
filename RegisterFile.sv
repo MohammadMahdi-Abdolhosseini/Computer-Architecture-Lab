@@ -6,7 +6,7 @@ module RegisterFile(
 
 	output reg [31:0] REG1, REG2
 );
-	reg [31:0] register[14:0];
+	reg [31:0] register[0:14];
 	integer i;
 	always@(negedge clk, posedge rst)
 	begin
