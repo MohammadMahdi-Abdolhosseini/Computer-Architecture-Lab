@@ -4,10 +4,10 @@ module ARM(
 	//output [17:0] LEDR, LEDG,
 
 
-	input [17:0] SW, 
-	input CLOCK_50
+	//input [17:0] SW, 
+	//input CLOCK_50
 
-	//input clk, rst
+	input clk, rst
 );
   
 	wire freeze, flush, Branch_taken;
@@ -22,7 +22,7 @@ module ARM(
 	wire [31:0] Result_WB;
 	wire WriteBackEn;
 	wire [3:0] Dest_WB;
-	wire hazard = 1'b0;
+	wire hazard;
 	wire [3:0] SR;
 
 	wire WB_EN_ID, MEM_R_EN_ID, MEM_W_EN_ID, B_ID, S_ID;
@@ -102,9 +102,9 @@ module ARM(
 	assign flush = B_ID_reg;
 	assign Branch_taken = B_ID_reg;
 
-	wire clk, rst;
-	assign clk = CLOCK_50;
-	assign rst = SW[0];
+	//wire clk, rst;
+	//assign clk = CLOCK_50;
+	//assign rst = SW[0];
 
 /*
 	//assign clk = SW[17];

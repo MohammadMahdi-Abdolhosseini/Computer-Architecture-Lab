@@ -6,7 +6,7 @@ module Status_Reg(
     output reg [3:0] SR
 );
 
-    always @(posedge clk, posedge rst) begin
+    always @(negedge clk, posedge rst) begin
 		if(rst == 1'b1)
 			SR <= 0;
 		else if (S_IN == 1)

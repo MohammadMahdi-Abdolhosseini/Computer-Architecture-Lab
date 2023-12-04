@@ -4,8 +4,10 @@ module CondCheck(
 	
 	output reg condition
 );
-	reg N, Z, C, V;
-	always@(Cond, Status)begin
+
+	wire N, Z, C, V;
+
+	always@(*)begin
 	case(Cond)
 		4'd0 : condition = Z;
 		4'd1 : condition = ~Z;
@@ -19,11 +21,15 @@ module CondCheck(
 		4'd9 : condition = (~C) | Z;
 		4'd10: condition = (N == V);
 		4'd11: condition = (N != V);
-		4'd12: condition = (Z == 1'b0) & (N == V);
-		4'd13: condition = (Z == 1'b1) | (N != V);
+		4'd12: condition = (~Z) & (N == V);
+		4'd13: condition = (Z) | (N != V);
 		4'd14: condition = 1'b1;
 		4'd15: condition = 1'b0;
+
+		
 	endcase
 	end
+
 	assign {N, Z, C, V} = Status;
+
 endmodule
