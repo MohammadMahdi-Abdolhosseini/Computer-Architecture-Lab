@@ -5,9 +5,9 @@ module ALU (
     output reg[3:0] Status
 );
 
-reg C = 0;
-//reg N = 0, Z = 0, C = 0, V = 0;
-wire  N = 0, Z = 0, V = 0;
+//reg C = 0;
+reg N = 0, Z = 0, C = 0, V = 0;
+//wire  N = 0, Z = 0, V = 0;
 
 always @(*) begin
     case (EXE_CMD)
