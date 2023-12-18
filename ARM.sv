@@ -4,10 +4,10 @@ module ARM(
 	//output [17:0] LEDR, LEDG,
 
 
-	//input [17:0] SW, 
-	//input CLOCK_50
+	input [17:0] SW, 
+	input CLOCK_50
 
-	input clk, rst, ForwardingMode
+	//input clk, rst, ForwardingMode
 );
   
 	wire freeze, flush, Branch_taken;
@@ -105,18 +105,17 @@ module ARM(
 
 	HDU hdu(SRC1_ID, SRC2_ID, Dest_EXE, Dest_MEM, WB_EN_EXE, WB_EN_MEM, Two_SRC_ID, hazard);
 
-	wire FM = ForwardingMode;
-	ForwardingUnit fwd(FM, SRC1_ID_reg, SRC2_ID_reg, Dest_MEM, Dest_WB, WB_EN_MEM, WB_EN_WB, sel_src1, sel_src2);
+	ForwardingUnit fwd(ForwardingMode, SRC1_ID_reg, SRC2_ID_reg, Dest_MEM, Dest_WB, WB_EN_MEM, WriteBackEn, sel_src1, sel_src2);
 
 
 	assign freeze = hazard;
 	assign flush = B_ID_reg;
 	assign Branch_taken = B_ID_reg;
 
-	//wire clk, rst;
-	//assign clk = CLOCK_50;
-	//assign rst = SW[0];
-	//assign ForwardingMode = SW[1];
+	wire clk, rst;
+	assign clk = CLOCK_50;
+	assign rst = SW[0];
+	assign ForwardingMode = SW[1];
 
 /*
 	//assign clk = SW[17];

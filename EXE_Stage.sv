@@ -19,8 +19,7 @@ module EXE_Stage(
 
 );
 
-	wire [31:0] Val2Gen_out;
-	wire val1ALU;
+	wire [31:0] Val2Gen_out, val1ALU;
 
 	ALU alu(val1ALU, Val2Gen_out, EXE_CMD_IN, SR_IN, ALU_Res, Status);
 	Val2Gen val2gen(VAL_RM, IMM_IN, ShiftOperand_IN, MEM_R_EN_IN | MEM_W_EN_IN, Val2Gen_out);
