@@ -25,7 +25,7 @@ module ID_Stage(
 
 	//assign S = Instruction[20];
 	assign SRC1 = Instruction[19:16];
-	assign SRC2 = MEM_W_EN ? Instruction[15:12] : Instruction[3:0];
+	assign SRC2 = MEM_W_EN || (Instruction[27:26] == 2'b00 && Instruction[24:21] == 4'b0011) ? Instruction[15:12] : Instruction[3:0]; // some adjustment for SORT command
 	RegisterFile RF(clk, rst, SRC1, SRC2, Dest_WB, Result_WB, WriteBackEn, VAL_RN, VAL_RM);
 
 	wire [3:0] Cond = Instruction[31:28];

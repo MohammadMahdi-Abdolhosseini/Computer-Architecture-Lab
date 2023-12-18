@@ -121,6 +121,14 @@ module ControlUnit(
 		MEM_W_EN = 1'b0;
 		B = 1'b1;
 	end
+	//SORT
+	if (Mode == 2'b00 && Opcode == 4'b0011)begin
+		WB_EN = 1'b1;
+		MEM_R_EN = 1'b0;
+		MEM_W_EN = 1'b0;
+		B = 1'b0;
+		EXE_CMD = 4'b0100;
+	end
 	end
 	assign CMD = {WB_EN, MEM_R_EN, MEM_W_EN, EXE_CMD, B, S};
 	
