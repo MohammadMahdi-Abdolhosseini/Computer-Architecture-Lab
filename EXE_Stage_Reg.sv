@@ -1,5 +1,5 @@
 module EXE_Reg(
-	input clk, rst,
+	input clk, rst, freeze,
 	input WB_EN_IN, MEM_R_EN_IN, MEM_W_EN_IN, B_IN, S_IN,
 	input [31:0] ALU_Res_IN,
 	input [31:0] VAL_RM_IN,
@@ -18,10 +18,12 @@ module EXE_Reg(
 			VAL_RM <= 32'd0;
 			Dest <= 0;
 		end else begin
-			{WB_EN, MEM_R_EN, MEM_W_EN, B, S} <= {WB_EN_IN, MEM_R_EN_IN, MEM_W_EN_IN, B_IN, S_IN};
-			ALU_Res <= ALU_Res_IN;
-			VAL_RM <= VAL_RM_IN;
-			Dest <= Dest_IN;
+			if(freeze == 1'b0) begin
+				{WB_EN, MEM_R_EN, MEM_W_EN, B, S} <= {WB_EN_IN, MEM_R_EN_IN, MEM_W_EN_IN, B_IN, S_IN};
+				ALU_Res <= ALU_Res_IN;
+				VAL_RM <= VAL_RM_IN;
+				Dest <= Dest_IN;
+			end
 		end
 	end
 

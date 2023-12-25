@@ -4,10 +4,20 @@ module ARM(
 	//output [17:0] LEDR, LEDG,
 
 
-	input [17:0] SW, 
-	input CLOCK_50
+	//input [17:0] SW, 
+	//input CLOCK_50,
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
+	input clk, rst, ForwardingMode,
 
-	//input clk, rst, ForwardingMode
+
+	inout [15:0] SRAM_DQ,
+	output [17:0] SRAM_ADDR,
+	output SRAM_UB_N,
+	output SRAM_LB_N,
+	output SRAM_WE_N,
+	output SRAM_CE_N,
+	output SRAM_OE_N
+	
 );
   
 	wire freeze, flush, Branch_taken;
@@ -48,7 +58,7 @@ module ARM(
 					  Result_WB, WriteBackEn, Dest_WB, hazard, SR,
 					  WB_EN_ID, MEM_R_EN_ID, MEM_W_EN_ID, B_ID, S_ID, EXE_CMD_ID, VAL_RN_ID, VAL_RM_ID, IMM_ID, ShiftOperand_ID, Signed_IMM_24_ID, Dest_ID, SRC1_ID, SRC2_ID, Two_SRC_ID);
 
-	ID_Reg id_reg(clk, rst, flush, WB_EN_ID, MEM_R_EN_ID, MEM_W_EN_ID, B_ID, S_ID, EXE_CMD_ID, PC_IF_reg, VAL_RN_ID, VAL_RM_ID, IMM_ID, ShiftOperand_ID, Signed_IMM_24_ID, Dest_ID, SR,
+	ID_Reg id_reg(clk, rst, freeze, flush, WB_EN_ID, MEM_R_EN_ID, MEM_W_EN_ID, B_ID, S_ID, EXE_CMD_ID, PC_IF_reg, VAL_RN_ID, VAL_RM_ID, IMM_ID, ShiftOperand_ID, Signed_IMM_24_ID, Dest_ID, SR,
 		      	  WB_EN_ID_reg, MEM_R_EN_ID_reg, MEM_W_EN_ID_reg, B_ID_reg, S_ID_reg, EXE_CMD_ID_reg, PC_ID_reg, VAL_RN_ID_reg, VAL_RM_ID_reg, IMM_ID_reg, ShiftOperand_ID_reg, Signed_IMM_24_ID_reg, Dest_ID_reg, SR_ID_reg,
 				  SRC1_ID, SRC2_ID,
 				  SRC1_ID_reg, SRC2_ID_reg);
@@ -76,7 +86,7 @@ module ARM(
 						sel_src1, sel_src2,
 						ALU_Res_EXE_reg, Result_WB);
 
-	EXE_Reg exe_reg(clk, rst, WB_EN_EXE, MEM_R_EN_EXE, MEM_W_EN_EXE, B_EXE, S_EXE,
+	EXE_Reg exe_reg(clk, rst, freeze, WB_EN_EXE, MEM_R_EN_EXE, MEM_W_EN_EXE, B_EXE, S_EXE,
 					ALU_Res_EXE, VAL_RM_EXE, Dest_EXE,
 					WB_EN_EXE_reg, MEM_R_EN_EXE_reg, MEM_W_EN_EXE_reg, B_EXE_reg, S_EXE_reg,
 					ALU_Res_EXE_reg, VAL_RM_EXE_reg, Dest_EXE_reg);
@@ -88,15 +98,19 @@ module ARM(
 	wire [31:0] ALU_Res_MEM, DATA_MEM;
 	wire [3:0] Dest_MEM;
 
+	wire ready;
+
 	wire WB_EN_MEM_reg, MEM_R_EN_MEM_reg;
 	wire [31:0] ALU_Res_MEM_reg, DATA_MEM_reg;
 	wire [3:0] Dest_MEM_reg;
 
 	MEM_Stage mem_stage(clk, rst, WB_EN_EXE_reg, MEM_R_EN_EXE_reg, MEM_W_EN_EXE_reg,
 						ALU_Res_EXE_reg, VAL_RM_EXE_reg, Dest_EXE_reg,
-						WB_EN_MEM, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM);
+						WB_EN_MEM, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
+						ready, SRAM_DQ, SRAM_ADDR, SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N
+						);
 
-	MEM_Reg mem_reg(clk, rst, WB_EN_MEM, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
+	MEM_Reg mem_reg(clk, rst, freeze, WB_EN_MEM && ~ready, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
 					WB_EN_MEM_reg, MEM_R_EN_MEM_reg, ALU_Res_MEM_reg, DATA_MEM_reg, Dest_MEM_reg);
 
 	WB_Stage wb_stage(clk, rst, WB_EN_MEM_reg, MEM_R_EN_MEM_reg, ALU_Res_MEM_reg, DATA_MEM_reg, Dest_MEM_reg,
@@ -107,15 +121,15 @@ module ARM(
 
 	ForwardingUnit fwd(ForwardingMode, SRC1_ID_reg, SRC2_ID_reg, Dest_MEM, Dest_WB, WB_EN_MEM, WriteBackEn, sel_src1, sel_src2);
 
-
-	assign freeze = hazard;
+	assign freeze = ready || hazard;
 	assign flush = B_ID_reg;
 	assign Branch_taken = B_ID_reg;
 
-	wire clk, rst;
-	assign clk = CLOCK_50;
-	assign rst = SW[0];
-	assign ForwardingMode = SW[1];
+	//wire clk, rst;
+	//assign clk = CLOCK_50;
+	//assign rst = SW[0];
+	//assign ForwardingMode = SW[1];
+	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /*
 	//assign clk = SW[17];

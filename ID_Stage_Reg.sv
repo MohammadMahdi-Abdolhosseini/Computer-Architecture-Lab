@@ -1,5 +1,5 @@
 module ID_Reg(
-	input clk, rst, flush,
+	input clk, rst, freeze, flush,
 	input WB_EN_IN, MEM_R_EN_IN, MEM_W_EN_IN, B_IN, S_IN,
 	input [3:0] EXE_CMD_IN,
 	input [31:0] PC_IN, VAL_RN_IN, VAL_RM_IN,
@@ -33,18 +33,19 @@ module ID_Reg(
 			SRC1 <= 0;
 			SRC2 <= 0;
 		end
-		else
-		begin
-			{WB_EN, MEM_R_EN, MEM_W_EN, B, S} <= {WB_EN_IN, MEM_R_EN_IN, MEM_W_EN_IN, B_IN, S_IN};
-			EXE_CMD <= EXE_CMD_IN;
-			{PC, VAL_RN, VAL_RM} <= {PC_IN, VAL_RN_IN, VAL_RM_IN};
-			IMM <= IMM_IN;
-			ShiftOperand <= ShiftOperand_IN;
-			Signed_IMM_24 <= Signed_IMM_24_IN;
-			Dest <= Dest_IN;
-			SR <= SR_IN;
-			SRC1 <= SRC1_IN;
-			SRC2 <= SRC2_IN;
+		else begin
+			if(freeze == 1'b0) begin
+				{WB_EN, MEM_R_EN, MEM_W_EN, B, S} <= {WB_EN_IN, MEM_R_EN_IN, MEM_W_EN_IN, B_IN, S_IN};
+				EXE_CMD <= EXE_CMD_IN;
+				{PC, VAL_RN, VAL_RM} <= {PC_IN, VAL_RN_IN, VAL_RM_IN};
+				IMM <= IMM_IN;
+				ShiftOperand <= ShiftOperand_IN;
+				Signed_IMM_24 <= Signed_IMM_24_IN;
+				Dest <= Dest_IN;
+				SR <= SR_IN;
+				SRC1 <= SRC1_IN;
+				SRC2 <= SRC2_IN;
+			end
 		end
 			
 	end
