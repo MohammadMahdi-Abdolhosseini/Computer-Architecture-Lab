@@ -19,20 +19,20 @@ module ARM(
 	output SRAM_OE_N
 	
 );
-  
+  	wire hazard;
 	wire freeze, flush, Branch_taken;
 	wire [31:0] BranchAddr;
 	wire [31:0] PC_IF, PC_IF_reg, PC_ID_reg, PC_EXE, PC_EXE_reg, PC_MEM, PC_MEM_reg, PC_WB;
 	wire [31:0] Instruction_IF, Instruction_IF_reg, Instruction_ID, Instruction_ID_reg;	
 	
 
-	IF_Stage if_stage(clk, rst, freeze, Branch_taken, BranchAddr, PC_IF, Instruction_IF);
-	IF_Reg if_reg(clk, rst, freeze, flush, PC_IF, Instruction_IF, PC_IF_reg, Instruction_IF_reg);
+	IF_Stage if_stage(clk, rst, freeze || hazard, Branch_taken, BranchAddr, PC_IF, Instruction_IF);
+	IF_Reg if_reg(clk, rst, freeze || hazard, flush, PC_IF, Instruction_IF, PC_IF_reg, Instruction_IF_reg);
 
 	wire [31:0] Result_WB;
 	wire WriteBackEn;
 	wire [3:0] Dest_WB;
-	wire hazard;
+	
 	wire [3:0] SR;
 
 	wire WB_EN_ID, MEM_R_EN_ID, MEM_W_EN_ID, B_ID, S_ID;
@@ -110,7 +110,7 @@ module ARM(
 						ready, SRAM_DQ, SRAM_ADDR, SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N
 						);
 
-	MEM_Reg mem_reg(clk, rst, freeze, WB_EN_MEM && ~ready, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
+	MEM_Reg mem_reg(clk, rst, freeze, WB_EN_MEM && !freeze, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
 					WB_EN_MEM_reg, MEM_R_EN_MEM_reg, ALU_Res_MEM_reg, DATA_MEM_reg, Dest_MEM_reg);
 
 	WB_Stage wb_stage(clk, rst, WB_EN_MEM_reg, MEM_R_EN_MEM_reg, ALU_Res_MEM_reg, DATA_MEM_reg, Dest_MEM_reg,
@@ -121,7 +121,7 @@ module ARM(
 
 	ForwardingUnit fwd(ForwardingMode, SRC1_ID_reg, SRC2_ID_reg, Dest_MEM, Dest_WB, WB_EN_MEM, WriteBackEn, sel_src1, sel_src2);
 
-	assign freeze = ready || hazard;
+	assign freeze = ~ready;
 	assign flush = B_ID_reg;
 	assign Branch_taken = B_ID_reg;
 

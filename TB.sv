@@ -18,7 +18,7 @@ module TopLevel();
 	always #10 clk = ~clk;
 	initial begin
  	#20 rst = 0;
-	ForwardingMode = 1;
+	ForwardingMode = 0;
   	end
 
 endmodule
