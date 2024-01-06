@@ -1,9 +1,7 @@
 /*module SRAM(
     input clk, rst,
 
-
     inout [15:0] SRAM_DQ, // IN OUT
-
 
 	input reg [17:0] SRAM_ADDR,
 	input SRAM_UB_N,
@@ -13,18 +11,28 @@
 	input SRAM_OE_N
 );
 
-reg [17:0] MEM[0:63];
+reg [15:0] MEM[0:63];
 
-always @(negedge clk) begin
+integer i;
+always@(posedge rst) begin
+    if (rst) 
+        for(i = 0; i <= 63; i = i + 1) begin
+            MEM[i] = 16'b0;
+        end
+end
+
+always @(posedge clk) begin
 	if (~SRAM_WE_N)
 		MEM[SRAM_ADDR] <= SRAM_DQ;
 end
     
-assign SRAM_DQ = SRAM_WE_N? MEM[SRAM_ADDR] : SRAM_DQ;
+assign SRAM_DQ = SRAM_WE_N? MEM[SRAM_ADDR] : 32'bz;
 
 endmodule*/
 
-`timescale 1ns/1ns
+
+
+
 module SRAM(
     clk,
     rst,
@@ -52,7 +60,7 @@ module SRAM(
     end
   
 
-assign #1 SRAM_DQ = SRAM_WE_N ? memory[SRAM_ADDR] : 32'bz;
+assign SRAM_DQ = SRAM_WE_N ? memory[SRAM_ADDR] : 32'bz;
 
 always@(posedge clk) begin
     if(~SRAM_WE_N) begin

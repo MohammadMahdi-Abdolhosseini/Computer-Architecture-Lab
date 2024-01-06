@@ -1,9 +1,11 @@
 module MEM_Stage(
 	input clk, rst, WB_EN_IN, MEM_R_EN_IN, MEM_W_EN_IN,
-	input [31:0] ALU_Res_IN, VAL_RM_IN, Dest_IN,
+	input [31:0] ALU_Res_IN, VAL_RM_IN,
+	input [3:0] Dest_IN,
 	
 	output WB_EN, MEM_R_EN, 
-	output [31:0] ALU_Res, DATA, Dest,
+	output [31:0] ALU_Res, DATA,
+	output [3:0] Dest,
 
 	output ready,
 

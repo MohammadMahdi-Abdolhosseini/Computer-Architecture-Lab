@@ -1,4 +1,3 @@
-`timescale 1ns/1ns
 module ARM(
 	//output [31:0] PC_IF_reg, Instruction_IF_reg,
 	//output [17:0] LEDR, LEDG,
@@ -109,8 +108,8 @@ module ARM(
 						WB_EN_MEM, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
 						ready, SRAM_DQ, SRAM_ADDR, SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N
 						);
-
-	MEM_Reg mem_reg(clk, rst, freeze, WB_EN_MEM && !freeze, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
+ 
+	MEM_Reg mem_reg(clk, rst, freeze, WB_EN_MEM && freeze, MEM_R_EN_MEM, ALU_Res_MEM, DATA_MEM, Dest_MEM,
 					WB_EN_MEM_reg, MEM_R_EN_MEM_reg, ALU_Res_MEM_reg, DATA_MEM_reg, Dest_MEM_reg);
 
 	WB_Stage wb_stage(clk, rst, WB_EN_MEM_reg, MEM_R_EN_MEM_reg, ALU_Res_MEM_reg, DATA_MEM_reg, Dest_MEM_reg,
