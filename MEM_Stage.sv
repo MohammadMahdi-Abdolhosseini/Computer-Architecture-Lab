@@ -11,11 +11,7 @@ module MEM_Stage(
 
 	inout [15:0] SRAM_DQ,
 	output [17:0] SRAM_ADDR,
-	output SRAM_UB_N,
-	output SRAM_LB_N,
-	output SRAM_WE_N,
-	output SRAM_CE_N,
-	output SRAM_OE_N
+	output SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N
 );
 
 	MemoryController memoryController(clk, rst, MEM_R_EN_IN, MEM_W_EN_IN, ALU_Res_IN, VAL_RM_IN, DATA,

@@ -1,4 +1,4 @@
-module MemoryController (/*
+module MemoryController (
 	input clk, rst, MEM_R_EN, MEM_W_EN, 
     input [31:0] ALU_Res, Val_Rm, 
 
@@ -7,40 +7,39 @@ module MemoryController (/*
 	//For freeze other stages
 	output reg ready,
 
-	inout [15:0] SRAM_DQ,
+	inout reg [15:0] SRAM_DQ,
 	output reg [17:0] SRAM_ADDR,
-	output reg SRAM_UB_N,
-	output reg SRAM_LB_N,
-	output reg SRAM_WE_N,
-	output reg SRAM_CE_N,
-	output reg SRAM_OE_N
+	output reg SRAM_UB_N, SRAM_LB_N, SRAM_WE_N, SRAM_CE_N, SRAM_OE_N
 );
 
 wire [31:0] adr = (ALU_Res - 32'd1024)>>2;
 
 reg [2:0] state = 3'b000, next_state;
 
-always @(posedge clk,posedge rst) begin
+always @(posedge clk, posedge rst) begin
     if(rst)
         state <= 0;
     else
         state <= next_state; 
 end
 
-always @(state, MEM_R_EN, MEM_W_EN) begin
-	ready <= 1'b0;
+always @(state, MEM_R_EN, MEM_W_EN, SRAM_DQ) begin
+	{SRAM_UB_N, SRAM_LB_N, SRAM_CE_N, SRAM_OE_N} <= 4'b0;
+    ready <= 1'b1;
 	case(state)
 		3'd0: begin
             next_state <= state;
             SRAM_ADDR <= {2'b00, adr[15:0]};
+            if (MEM_R_EN) begin
+			    SRAM_WE_N <= 1'b1;
+                next_state <= 3'd1;
+                ready <= 1'b0;
+		    end
 		    if (MEM_W_EN) begin
 			    //SRAM_DQ <= Val_Rm[15:0];
 			    SRAM_WE_N = 1'b0;
                 next_state <= 3'd1;
-		    end
-		    if (MEM_R_EN) begin
-			    SRAM_WE_N <= 1'b1;
-                next_state <= 3'd1;
+                ready <= 1'b0;
 		    end
 		    
 		end
@@ -48,58 +47,63 @@ always @(state, MEM_R_EN, MEM_W_EN) begin
 		3'd1: begin
             next_state <= state;
 		    SRAM_ADDR <= {2'b00, adr[31:16]};
+            if (MEM_R_EN) begin
+                SRAM_WE_N <= 1'b1;
+			    DATA[15:0] <= SRAM_DQ;
+                next_state <= 3'd2;
+                ready <= 1'b0;
+		    end
 		    if (MEM_W_EN) begin
 			    //SRAM_DQ <= Val_Rm[31:16];
 			    SRAM_WE_N <= 1'b0;
                 next_state <= 3'd2;
+                ready <= 1'b0;
 		    end
-		    if (MEM_R_EN) begin
-			    DATA[15:0] <= SRAM_DQ;
-			    SRAM_WE_N <= 1'b1;
-                next_state <= 3'd2;
-		    end
+		    
 		    
 		end
 
 		3'd2: begin
             next_state <= state;
+            if (MEM_R_EN) begin
+                SRAM_WE_N <= 1'b1;
+			    DATA[31:16] <= SRAM_DQ;
+                next_state <= 3'd3;
+                ready <= 1'b0;
+		    end
 		    if (MEM_W_EN) begin
 			    SRAM_WE_N <= 1'b1;
                 next_state <= 3'd3;
-		    end
-		    if (MEM_R_EN) begin
-			    DATA[31:16] <= SRAM_DQ;
-			    SRAM_WE_N <= 1'b1;
-                next_state <= 3'd3;
+                ready <= 1'b0;
 		    end
 		    
 		end
 
 		3'd3: begin
 		    next_state <= 3'd4;
+            ready <= 1'b0;
 		end
 
 		3'd4: begin
 		    next_state <= 3'd5;
+            ready <= 1'b0;
 		end
 
 		3'd5: begin
 		    next_state <= 3'd0;
-		    ready <= 1;
+            ready <= 1'b1;
 		end
 
 	endcase
 
 end
 
-assign {SRAM_UB_N, SRAM_LB_N, SRAM_CE_N, SRAM_OE_N} = 4'b0;
-
 assign SRAM_DQ = (MEM_W_EN && (state == 3'd1)) ? Val_Rm[31:16] : ((MEM_W_EN && (state == 3'd0)) ? Val_Rm[15:0] : 16'bz);
 
 
-endmodule*/
+endmodule
 
-
+/*
 clk,rst,rd_en, wr_en,adr,wr_data,rd_data,ready,SRAM_DQ,SRAM_adr,SRAM_UB_N,SRAM_LB_N,SRAM_WE_N,SRAM_CE_N,SRAM_OE_N);
 input clk,rst,wr_en,rd_en;
 input [31:0]adr,wr_data;
@@ -178,4 +182,4 @@ assign s_adr=adr-32'd1024;
 assign SRAM_adr=(ps==3'b000)?{s_adr[18:2],1'b0}:(ps==3'b001)?{s_adr[18:2],1'b1}:0;
 // assign SRAM_WE_N=((ps[2:1]==2'b0)&&(wr_en==1'b1))?1'b0:1'b1;
 
-endmodule
+endmodule*/
