@@ -3,10 +3,12 @@ module ARM(
 	//output [17:0] LEDR, LEDG,
 
 
-	//input [17:0] SW, 
-	//input CLOCK_50,
+	input [17:0] SW, 
+	input CLOCK_50,
+	input CLOCK_27,
+
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
-	input clk, rst, ForwardingMode,
+	//input clk, rst, ForwardingMode,
 
 
 	inout [15:0] SRAM_DQ,
@@ -119,10 +121,10 @@ module ARM(
 	assign flush = B_ID_reg;
 	assign Branch_taken = B_ID_reg;
 
-	//wire clk, rst;
-	//assign clk = CLOCK_50;
-	//assign rst = SW[0];
-	//assign ForwardingMode = SW[1];
+	wire clk, rst;
+	assign clk = CLOCK_50;
+	assign rst = SW[4];
+	assign ForwardingMode = SW[5];
 	//=-=-=-=-=-=-=-=-=-=-=-=-=-=-=
 
 /*

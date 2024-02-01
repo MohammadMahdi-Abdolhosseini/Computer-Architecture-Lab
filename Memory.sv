@@ -36,7 +36,7 @@ always @(state, MEM_R_EN, MEM_W_EN, SRAM_DQ) begin
                 ready <= 1'b0;
 		    end
 		    if (MEM_W_EN) begin
-			    SRAM_WE_N = 1'b0;
+			    SRAM_WE_N <= 1'b0;
                 next_state <= 3'd1;
                 ready <= 1'b0;
 		    end
